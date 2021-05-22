@@ -4,3 +4,4 @@ build/
 dist/
 inno_setup.iss
 main/__pycache__
+logo.ico
