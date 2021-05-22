@@ -1,0 +1,6 @@
+.vscode/
+__pycache__/
+build/
+dist/
+inno_setup.iss
+main/__pycache__
