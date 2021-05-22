@@ -1,6 +1,8 @@
 # face-detection-cropping
 
-This is a GUI to automatically crop your images based on face position
+A GUI to automatically batch crop your portraits using face detection.
 
+To use this GUI, you can either download the source code and generate the executable through the run.spec file using pysintaller
+OR download the "dist" directory which contains the already packaged executable.
 
-In the repository is the "run.spec" I used to create the executable though PyInstaller
+The opencv DNN algorithm is used to detect faces. 
