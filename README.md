@@ -15,13 +15,13 @@ The opencv DNN algorithm is used to detect faces.
 ![Alt text](./readme_images/app.jpg?raw=true "GUI")
 
 
-##Supported image file types
+## Supported image file types
 
 * JPG (tested)
 * PNG (tested)
 * Any image file readable by opencv and Pillow (not tested)
 
-##Supported languages
+## Supported languages
 
 * english
 * french
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     main('english') #'english' or 'french' supported
 ~~~
 	
-##Credits
+## Credits
 Adapted from:
 * https://github.com/leblancfg/autocrop
 * https://towardsdatascience.com/face-detection-models-which-to-use-and-why-d263e82c302c
