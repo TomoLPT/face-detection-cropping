@@ -12,7 +12,7 @@ To use this GUI, you can either:
 The opencv DNN algorithm is used to detect faces. 
 
 # Use
-![Alt text](readme_images/app.jpg?raw=true "GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "GUI")
 
 
 ## Supported image file types
