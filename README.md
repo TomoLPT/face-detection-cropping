@@ -4,7 +4,7 @@ A GUI to automatically batch crop your portraits using face detection. Powered b
 
 ## Installation
 To use this GUI, you can either:
-1. Download the source code and generate the executable through the run.spec file using pysintaller
+1. Download the source code and generate the executable using pysintaller and the .spec file available in the repo
 ~~~sh
 pyinstaller run.spec
 ~~~
@@ -33,24 +33,30 @@ pyinstaller run.spec
 
 ## Examples:
 ![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_1.JPG?raw=true "GUI")
-* **Width (%)**: 35
-* **Height (%)**: 70
-* **Horizontal Assymmetry (%)**: 0
-* **Vertical Assymmetry (%)**: 0
-
-
+* Width (%): 55
+* Height (%): 80
+* Horizontal Assymmetry (%): 15
+* Vertical Assymmetry (%): 5
 
 ![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_2.JPG?raw=true "GUI")
-* **Width (%)**: 55
-* **Height (%)**: 80
-* **Horizontal Assymmetry (%)**: 15
-* **Vertical Assymmetry (%)**: 5
+* Width (%): 35
+* Height (%): 70
+* Horizontal Assymmetry (%): 0
+* Vertical Assymmetry (%): 0
 
 ## Supported image file types
 
 * JPG (tested)
 * PNG (tested)
 * Any image file readable by opencv and Pillow (not tested)
+
+## Supported OS
+
+* Windows 10 (tested). Should work fine on previous windows OS.
+* For other OS, you can generate the executable from your own OS:
+~~~sh
+pyinstaller run.spec
+~~~
 
 ## Supported GUI languages
 

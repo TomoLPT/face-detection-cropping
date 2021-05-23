@@ -1,47 +1,42 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'app.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
 import glob
 import os
-from itertools import compress
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
-import time
-            
-import cv2 
-import numpy as np
 import pathlib
 from pathlib import Path
 from PIL import Image, ImageOps, ImageQt
+from itertools import compress
+import cv2 
+import numpy as np
 import json
+import time
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
 from main.constants import (
     PNGS,
     CV2_FILETYPES)       
             
 
-file_name = 'main/parameters.json'
+param_file_path = 'main/parameters.json' #file used to save cropping preferences
 
 try:
-    parameters_json = open(file_name)
+    #autorisation to open a file in :C/ProgramFiles directory is usually restricted unless user executes the program as admin
+    parameters_json = open(param_file_path)
     parameters = json.load(parameters_json)
-    autorisation = True
+    autorisation = True 
 except:
     autorisation = False
     print("No autorisation to read parameters.json")
  
 
-
-class Ui_MainWindow(object):
+#GUI design, standard pyqt5 code
+class Ui_MainWindow(object): 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(778, 883)
-        MainWindow.setWindowTitle("Cadrage Automatique")
         MainWindow.setWindowIcon(QtGui.QIcon('logo.ico'))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
@@ -91,8 +86,6 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.output_dir_button.sizePolicy().hasHeightForWidth())
         self.output_dir_button.setSizePolicy(sizePolicy)
         self.output_dir_button.setMinimumSize(QtCore.QSize(200, 0))
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.output_dir_button.setFont(font)
         self.output_dir_button.setObjectName("output_dir_button")
         self.verticalLayout.addWidget(self.output_dir_button, 0, QtCore.Qt.AlignHCenter)
@@ -121,8 +114,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.width_asy_label.sizePolicy().hasHeightForWidth())
         self.width_asy_label.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.width_asy_label.setFont(font)
         self.width_asy_label.setObjectName("width_asy_label")
         self.gridLayout.addWidget(self.width_asy_label, 0, 2, 1, 1, QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
@@ -133,8 +124,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.height_label.sizePolicy().hasHeightForWidth())
         self.height_label.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.height_label.setFont(font)
         self.height_label.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.height_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
@@ -147,8 +136,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.tag_label.sizePolicy().hasHeightForWidth())
         self.tag_label.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.tag_label.setFont(font)
         self.tag_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.tag_label.setObjectName("tag_label")
@@ -170,8 +157,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.height_asy_label.sizePolicy().hasHeightForWidth())
         self.height_asy_label.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.height_asy_label.setFont(font)
         self.height_asy_label.setObjectName("height_asy_label")
         self.gridLayout.addWidget(self.height_asy_label, 3, 2, 1, 1, QtCore.Qt.AlignRight)
@@ -206,8 +191,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.width_label.sizePolicy().hasHeightForWidth())
         self.width_label.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.width_label.setFont(font)
         self.width_label.setObjectName("width_label")
         self.gridLayout.addWidget(self.width_label, 0, 0, 1, 1, QtCore.Qt.AlignRight)
@@ -233,8 +216,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.checkbox_folder.sizePolicy().hasHeightForWidth())
         self.checkbox_folder.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.checkbox_folder.setFont(font)
         self.checkbox_folder.setObjectName("checkbox_folder")
         self.horizontalLayout.addWidget(self.checkbox_folder, 0, QtCore.Qt.AlignRight)
@@ -245,8 +226,6 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.checkbox_count.sizePolicy().hasHeightForWidth())
         self.checkbox_count.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.checkbox_count.setFont(font)
         self.checkbox_count.setObjectName("checkbox_count")
         self.checkbox_count.setChecked(True)
@@ -261,8 +240,6 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.preview_button.sizePolicy().hasHeightForWidth())
         self.preview_button.setSizePolicy(sizePolicy)
         self.preview_button.setMinimumSize(QtCore.QSize(200, 0))
-        font = QtGui.QFont()
-        font.setPointSize(13)
         self.preview_button.setFont(font)
         self.preview_button.setObjectName("preview_button")
         self.verticalLayout.addWidget(self.preview_button, 0, QtCore.Qt.AlignHCenter)
@@ -311,7 +288,8 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.title.setBuddy(self.BOX)
 
-        if autorisation:
+
+        if autorisation: #loads preferences if app managed to load parameters.json file
             self.tag_input.setText(parameters['tag'])
             self.height_asy_input.setText(str(parameters['height_asy']))
             self.width_asy_input.setText(str(parameters['width_asy']))
@@ -329,7 +307,8 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
 
         if language == "french":
-            self.title.setText(_translate("MainWindow", "Cadrage Automatique de Portraits"))
+            MainWindow.setWindowTitle("Cadrage Automatique")
+            self.title.setText(_translate("MainWindow", "Cadrage Automatique"))
             self.input_dir_button.setText(_translate("MainWindow", "Dossier des Images"))
             self.output_dir_button.setText(_translate("MainWindow", "Dossier de Sortie"))
             self.width_asy_label.setText(_translate("MainWindow", "Assymétrie Horizontale (%)"))
@@ -345,12 +324,14 @@ class Ui_MainWindow(object):
             self.warning_values = 'Valeurs non reconnues'
             self.warning_folders = "Veuillez indiquer un dossier d'entrée et de sortie"
             self.warning_title = 'Erreur'
+            self.warning_no_file = 'Votre dossier est vide'
 
         if language == "english":
+            MainWindow.setWindowTitle("Face Crop")
             self.title.setText(_translate("MainWindow", "Face Detection Cropping"))
             self.input_dir_button.setText(_translate("MainWindow", "Input Folder"))
             self.output_dir_button.setText(_translate("MainWindow", "Output Folder"))
-            self.width_asy_label.setText(_translate("MainWindow", "Horizontal Assymmetry(%)"))
+            self.width_asy_label.setText(_translate("MainWindow", "Horizontal Assymmetry (%)"))
             self.height_label.setText(_translate("MainWindow", "Height (%)"))
             self.tag_label.setText(_translate("MainWindow", "File Tag"))
             self.height_asy_label.setText(_translate("MainWindow", "Vertical Assymmetry (%)"))
@@ -363,20 +344,26 @@ class Ui_MainWindow(object):
             self.warning_folders = 'Please specify an input and output folder'
             self.warning_values = 'Input values not recognised'
             self.warning_title = 'Error'
+            self.warning_no_file = 'Your input folder is empty'
         
+
+    #function to load input directory    
     def select_input_dir(self):
         self.input_path = QtWidgets.QFileDialog.getExistingDirectory()
         self.paths = glob.glob('{}/*'.format(self.input_path))
         if len(self.paths)==0:
             print("No files in folder!")
+            self.error_popup(self.warning_no_file)
         
+    #function to load output directory
     def select_output_dir(self):
         self.output_path = QtWidgets.QFileDialog.getExistingDirectory()
         
     
+    #main function executed when Frame button is pressed
     def crop(self, preview=False):
         
-        try:
+        try: #making sure data entered in each field is of correct format
             height = float(self.height_input.text())
             width = float(self.width_input.text())
             height_asy = float(self.height_asy_input.text())
@@ -384,25 +371,27 @@ class Ui_MainWindow(object):
             tag = str(self.tag_input.text())
             bool_folder = self.checkbox_folder.isChecked()
             bool_count = self.checkbox_count.isChecked()
-            face_crop = FaceCrop(height, width, height_asy, width_asy, tag)
+
+            face_crop = FaceCrop(height, width, height_asy, width_asy, tag) #initialising cropping class
             
         except:
-            self.error_popup(self.warning_values)
+            self.error_popup(self.warning_values) #if incorrect, popup appears
             return
     
         if autorisation:
-            self.update_params(parameters, file_name)
+            self.update_params(parameters, param_file_path) #saves preferences if app is autorised to write file
         
-        try:
-            self.output_path
+        try: 
+            self.input_path
+            self.output_path 
             bool_folders = [os.path.isdir(i) for i in self.paths]
-            isdir = any(bool_folders)
+            subfolders = any(bool_folders)
             
         except:
             self.error_popup(self.warning_folders)
             return            
             
-        if isdir:
+        if subfolders:
             
             directories = list(compress(self.paths, bool_folders))
             bar_length = sum([len(next(os.walk(dir_))[2]) for dir_ in directories])
@@ -411,30 +400,26 @@ class Ui_MainWindow(object):
                 self.progress_bar(bar_length)
 
             for directory in directories:
-                files = glob.glob('{}/*'.format(directory))
-            
-                
+               
                 if preview:
-                    preview_img = face_crop.crop_save(files, self.output_path, directory, bool_folder=bool_folder, 
-                                                      bool_count=bool_count, preview=preview)
+                    preview_img = face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_count=bool_count, preview=preview)
                 else:
                     if self.progress.wasCanceled():
                         break
-                    face_crop.crop_save(files, self.output_path, directory, bool_folder=bool_folder, bool_count=bool_count)
+                    face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_count=bool_count)
         
         
         else:
-            directory = self.input_path
             bar_length = len(next(os.walk(self.input_path))[2])
             
             if not preview:   
                 self.progress_bar(bar_length)
 
             if preview:
-                preview_img = face_crop.crop_save(self.paths, self.output_path, directory, bool_folder=bool_folder, 
+                preview_img = face_crop.crop_save(self.input_path, self.output_path, bool_folder=bool_folder, 
                                                   bool_count=bool_count, preview=preview)
             else:
-                face_crop.crop_save(self.paths, self.output_path, directory, bool_folder=bool_folder, 
+                face_crop.crop_save(self.input_path, self.output_path, bool_folder=bool_folder, 
                                     bool_count=bool_count)
     
 
@@ -506,9 +491,10 @@ class FaceCrop():
 
 
         
-    def crop_save(self, files, output_path, directory, bool_folder=True, bool_count=False, preview=False):
+    def crop_save(self, input_directory, output_path, bool_folder=False, bool_count=False, preview=False):
 
-        folder_name = pathlib.PurePath(directory).name
+        folder_name = pathlib.PurePath(input_directory).name
+        files = glob.glob('{}/*'.format(input_directory))
 
         if self.tag:
             self.tag = "_" + self.tag
