@@ -15,11 +15,11 @@ To execute the GUI, you can either:
 ~~~sh
 python run.py
 ~~~
-1. Generate the executable using pyinstaller and the .spec file available in the repo (requires python 3)
+2. Generate the executable using pyinstaller and the .spec file available in the repo (requires python 3)
 ~~~sh
 pyinstaller run.spec
 ~~~
-2. If you are on Windows: download the "dist" folder of this repo which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
+3. If you are on Windows: download the "dist" folder of this repo which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
 
 ## Use
 ![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "Batch Crop GUI")
