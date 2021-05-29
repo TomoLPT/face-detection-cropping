@@ -3,8 +3,19 @@
 A GUI to automatically batch crop your portraits using face detection. Powered by the OpenCV DNN algorithm.
 
 ## Installation
-To use this GUI, you can either:
-1. Download the source code and generate the executable using pyinstaller and the .spec file available in the repo
+To use this GUI, first download this repo by either:
+* cloning this repo from your cmd (install git first):
+~~~sh
+git clone https://github.com/TomoLPT/face-detection-cropping
+~~~
+* downloading the zip of this repo 
+
+To execute the GUI, you can either:
+1. Start the 'run.py' file (requires python 3)
+~~~sh
+python run.py
+~~~
+1. Generate the executable using pyinstaller and the .spec file available in the repo (requires python 3)
 ~~~sh
 pyinstaller run.spec
 ~~~

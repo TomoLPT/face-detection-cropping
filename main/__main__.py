@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(778, 883)
-        MainWindow.setWindowIcon(QtGui.QIcon('logo.ico'))
+        # MainWindow.setWindowIcon(QtGui.QIcon('logo.ico'))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
