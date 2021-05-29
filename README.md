@@ -19,7 +19,7 @@ python run.py
 ~~~sh
 pyinstaller run.spec
 ~~~
-2. If you are on Windows: download the "dist" directory which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
+2. If you are on Windows: download the "dist" folder of this repo which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
 
 ## Use
 ![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "Batch Crop GUI")
