@@ -1,28 +1,25 @@
 # -*- coding: utf-8 -*-
+#author: Tomo Lapautre
 
 import glob
 import os
-import pathlib
-from pathlib import Path
-from PIL import Image, ImageOps, ImageQt
+from PIL import ImageQt
 from itertools import compress
-import cv2 
-import numpy as np
 import json
-import time
+# import time
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
-from main.constants import (
-    PNGS,
-    CV2_FILETYPES)       
+from main.facecrop import FaceCrop
             
 
 param_file_path = 'main/parameters.json' #file used to save cropping preferences
 
+#autorisation to open and write the parameters file is restricted if the GUI is installed in :C/ProgramFiles directory
+#user has to execute the GUI in admin mode or GUI will crash
+#to avoid crashing, code below tests if access is restricted
 try:
-    #autorisation to open a file in :C/ProgramFiles directory is usually restricted unless user executes the program as admin
     parameters_json = open(param_file_path)
     parameters = json.load(parameters_json)
     autorisation = True 
@@ -33,6 +30,9 @@ except:
 
 #GUI design, standard pyqt5 code
 class Ui_MainWindow(object): 
+    def __init__(self, language):
+        self.language = language
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
@@ -288,8 +288,8 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.title.setBuddy(self.BOX)
 
-
-        if autorisation: #loads preferences if app managed to load parameters.json file
+        #loads parameters if app managed to load parameters.json file
+        if autorisation: 
             self.tag_input.setText(parameters['tag'])
             self.height_asy_input.setText(str(parameters['height_asy']))
             self.width_asy_input.setText(str(parameters['width_asy']))
@@ -306,7 +306,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
 
-        if language == "french":
+        if self.language == "french":
             MainWindow.setWindowTitle("Cadrage Automatique")
             self.title.setText(_translate("MainWindow", "Cadrage Automatique"))
             self.input_dir_button.setText(_translate("MainWindow", "Dossier des Images"))
@@ -326,7 +326,7 @@ class Ui_MainWindow(object):
             self.warning_title = 'Erreur'
             self.warning_no_file = 'Votre dossier est vide'
 
-        if language == "english":
+        if self.language == "english":
             MainWindow.setWindowTitle("Face Crop")
             self.title.setText(_translate("MainWindow", "Face Detection Cropping"))
             self.input_dir_button.setText(_translate("MainWindow", "Input Folder"))
@@ -361,69 +361,74 @@ class Ui_MainWindow(object):
         
     
     #main function executed when Frame button is pressed
-    def crop(self, preview=False):
+    def crop(self, preview=False): #preview means we only want to generate the first picture we find. Activated when Preview button is pressed
         
-        try: #making sure data entered in each field is of correct format
+        #making sure data entered in each field is of correct format
+        try: 
             height = float(self.height_input.text())
             width = float(self.width_input.text())
             height_asy = float(self.height_asy_input.text())
             width_asy = float(self.width_asy_input.text())
             tag = str(self.tag_input.text())
             bool_folder = self.checkbox_folder.isChecked()
-            bool_count = self.checkbox_count.isChecked()
+            bool_face_count = self.checkbox_count.isChecked()
 
-            face_crop = FaceCrop(height, width, height_asy, width_asy, tag) #initialising cropping class
-            
-        except:
-            self.error_popup(self.warning_values) #if incorrect, popup appears
-            return
-    
-        if autorisation:
-            self.update_params(parameters, param_file_path) #saves preferences if app is autorised to write file
+            face_crop = FaceCrop(height, width, height_asy, width_asy, tag, pyqt_ui=self) #initialising instance of the FaceCrop class
         
+        #if incorrect, popup appears
+        except:
+            self.error_popup(self.warning_values) 
+            return
+
+        #saves preferences if app is autorised to write file
+        if autorisation: 
+            self.update_params(parameters, param_file_path) 
+        
+        #making sure input and output path were defined by the user
         try: 
             self.input_path
             self.output_path 
             bool_folders = [os.path.isdir(i) for i in self.paths]
-            subfolders = any(bool_folders)
+            subfolders = any(bool_folders) #subfolders variable checks if input directory contains folders that need to be treated
             
         except:
             self.error_popup(self.warning_folders)
-            return            
-            
+            return        
+
+
+        #if subfolders if true, program will convert images found in those subfolders
         if subfolders:
             
-            directories = list(compress(self.paths, bool_folders))
-            bar_length = sum([len(next(os.walk(dir_))[2]) for dir_ in directories])
+            directories = list(compress(self.paths, bool_folders)) #finds all the subfolders
+            bar_length = sum([len(next(os.walk(dir_))[2]) for dir_ in directories]) #calculates the bar length of our progress bar
             
-            if not preview:
+            #initialises a progress bar if we are not generating just a preview image
+            if not preview: 
                 self.progress_bar(bar_length)
 
-            for directory in directories:
-               
+            #checks images in all subfolders
+            for directory in directories: 
                 if preview:
-                    preview_img = face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_count=bool_count, preview=preview)
+                    preview_img = face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_face_count=bool_face_count, preview=preview)
                 else:
-                    if self.progress.wasCanceled():
+                    if self.progress.wasCanceled(): #breaks program if user clicked on the 'cancel' button of the progress bar
                         break
-                    face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_count=bool_count)
+                    face_crop.crop_save(directory, self.output_path, bool_folder=bool_folder, bool_face_count=bool_face_count)
         
         
         else:
             bar_length = len(next(os.walk(self.input_path))[2])
-            
-            if not preview:   
-                self.progress_bar(bar_length)
 
             if preview:
                 preview_img = face_crop.crop_save(self.input_path, self.output_path, bool_folder=bool_folder, 
-                                                  bool_count=bool_count, preview=preview)
+                                                  bool_face_count=bool_face_count, preview=preview)
             else:
+                self.progress_bar(bar_length)
                 face_crop.crop_save(self.input_path, self.output_path, bool_folder=bool_folder, 
-                                    bool_count=bool_count)
+                                    bool_face_count=bool_face_count)
     
 
-            
+        #displays preview image if preview is true
         if preview:
             imgQ = ImageQt.ImageQt(preview_img)
             
@@ -435,6 +440,7 @@ class Ui_MainWindow(object):
             self.preview_image.setAlignment(QtCore.Qt.AlignCenter)
         
     
+    #method to display a message in a popup
     def error_popup(self, text):
          self.msg = QtWidgets.QMessageBox()
          self.msg.setWindowTitle(self.warning_title)
@@ -442,6 +448,8 @@ class Ui_MainWindow(object):
          self.msg.setIcon(QtWidgets.QMessageBox.Critical)
          self.msg.exec_()        
 
+
+    #method to generate progress_bar
     def progress_bar(self, length):
         self.progress = QtWidgets.QProgressDialog("Veuillez Patienter", "Annuler", 0, length)
         self.progress.setWindowModality(Qt.WindowModal)
@@ -449,6 +457,8 @@ class Ui_MainWindow(object):
         self.progress.setFixedSize(600, 100)
         self.progress.setMinimumDuration(100)
 
+
+    #method to update parameters by writing variables values in the parameters.json file
     def update_params(self, data, file_name):
 
         data['width'] = self.width_input.text()
@@ -464,174 +474,16 @@ class Ui_MainWindow(object):
 
         
             
-            
-            
-            
-            
-            
-
-
-
-class FaceCrop():
-    
-    def __init__(self, height, width, height_asy, width_asy, tag='A'):
-        
-        self.width = width
-        self.width_asy = width_asy
-        self.height = height
-        self.height_asy = height_asy
-        self.tag = tag
-        self.failure_folder = '000_FAILS'
-        self.threshold = 0.9
-        self.progress_count = 0
-
-        self.modelFile = "main/res10_300x300_ssd_iter_140000.caffemodel"
-        self.configFile = "main/deploy.prototxt.txt"
-        self.net = cv2.dnn.readNetFromCaffe(self.configFile, self.modelFile)
-
-
-        
-    def crop_save(self, input_directory, output_path, bool_folder=False, bool_count=False, preview=False):
-
-        folder_name = pathlib.PurePath(input_directory).name
-        files = glob.glob('{}/*'.format(input_directory))
-
-        if self.tag:
-            self.tag = "_" + self.tag
-        
-        for i, file in enumerate(files):
-            
-            if not preview:
-                self.progress_count += 1
-                ui.progress.setValue(self.progress_count)
-                
-                if ui.progress.wasCanceled():
-                    break
-    
-            
-            file_path = Path(file)
-            file_name = file_path.stem
-            ext = file_path.suffix
-
-            if ext.lower() not in CV2_FILETYPES:
-                continue
-            
-            image = cv2.imdecode(np.fromfile(file, dtype=np.uint8), cv2.IMREAD_COLOR) #IMREAD_COLOR
-        
-            try:
-                img_height, img_width = image.shape[:2]
-            except AttributeError:
-                print('{}: ImageReadError'.format(file_name))
-                
-                continue
-    
-            blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 117.0, 123.0)) #resize image
-            self.net.setInput(blob)
-            faces = self.net.forward()
-        
-            
-            temp_file = np.asarray(ImageOps.exif_transpose(Image.open(file))) #load image using PIL as cv2 can't read png properly
-                
-            width_px = int((abs(self.width)*img_width)/100)
-            height_px = int((abs(self.height)*img_height)/100)
-                
-            k = 0
-            
-            if bool_count:
-                ranges = range(1)
-                self.threshold_ = 0
-            else:
-                ranges = range(faces.shape[2])
-                
-            for i in ranges:
-                confidence = faces[0, 0, i, 2]
-                if confidence > self.threshold:
-                    k+=1
-                       
-                    box = faces[0, 0, i, 3:7] * np.array([img_width, img_height, img_width, img_height])
-                    face = box.astype("int")
-                    x0, y0, x1, y1 = face            
-                    h = y1 - y0
-                    w = x1 - x0
-                    
-                    south = min(int(y0 + 0.5*h + ((50+self.height_asy)/100)*height_px), img_height)
-                    if south - height_px < 0 and ext.lower() not in PNGS:
-                        south = height_px
-                        north = 0
-                    else:
-                        north = max(south - height_px, 0)
-                    
-                    west = max(int(x0 + 0.5*w - ((50+self.width_asy)/100)*width_px), 0)
-                    if west + width_px > img_width:
-                        west = img_width - width_px
-                        east = img_width
-                    else:
-                        east = min(west + width_px, img_width)
-                
-                    face  = temp_file[north : south, west : east]
-                    
-
-                    
-                    if ext.lower() in PNGS:
-                        extra_height = height_px - min(int(y0 + 0.5*h + ((50+self.height_asy)/100)*height_px), img_height)
-                        if extra_height > 0:
-                            extra_layer = np.full((extra_height, face.shape[1], 4), 255, dtype='uint8')
-                            extra_layer[:, :, 3] = 0
-                            face = np.concatenate((extra_layer, face), axis=0)
-                        
-                    cropped_face = Image.fromarray(face)
-                    
-                    
-                    if preview:
-                        return cropped_face
-                        break
-                    
-                    
-                    file_name_folder = file_name.rstrip()
-
-                    if bool_folder:                
-                        if not os.path.exists('{0}/{1}/{2}'.format(output_path, folder_name, str(file_name_folder))):
-                            os.makedirs('{0}/{1}/{2}'.format(output_path, folder_name, str(file_name_folder)))
-                        if k==1:
-                            cropped_face.save('{0}/{1}/{2}/{2}{3}{4}'.format(output_path, folder_name, str(file_name_folder), self.tag, ext))
-                        else:
-                            cropped_face.save('{0}/{1}/{2}/{2}{3}_{4}{5}'.format(output_path, folder_name, str(file_name_folder), self.tag, k, ext))
-                    else:
-                        if not os.path.exists('{0}/{1}'.format(output_path, folder_name)):
-                            os.mkdir('{0}/{1}'.format(output_path, folder_name))
-                        if k==1:
-                            cropped_face.save('{0}/{1}/{2}{3}{4}'.format(output_path, folder_name, str(file_name), self.tag, ext))
-                        else:
-                            cropped_face.save('{0}/{1}/{2}{3}_{4}{5}'.format(output_path, folder_name, str(file_name), self.tag, k,  ext))
-                
-                
-            if k == 0:
-                if preview:
-                    pass
-                
-                else:
-                    print('{}: Failed to detect face'.format(file_name))
-                    if not os.path.exists('{0}/{1}'.format(output_path, self.failure_folder)):
-                        os.mkdir('{0}/{1}'.format(output_path, self.failure_folder))
-                    Image.fromarray(temp_file).save('{0}/{1}/{2}{3}'.format(output_path, self.failure_folder, str(file_name), ext))
-                
-                continue                                           
-    
-
-
 
 def main(app_language):
-    if time.time() < 1628438147:
-        global ui, language
-        
-        language = app_language
-        import sys
-        app = QtWidgets.QApplication(sys.argv)
-        MainWindow = QtWidgets.QMainWindow()
-        ui = Ui_MainWindow()
-        ui.setupUi(MainWindow)
-        MainWindow.show()
-        sys.exit(app.exec_())
+    # if time.time() < 1628438147:
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow(app_language)
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
     
     

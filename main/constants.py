@@ -18,3 +18,7 @@ CV2_FILETYPES = [
 ]
 
 PNGS = ['.png']
+
+DNN_THRESHOLD = 0.9
+
+FAILED_IMAGE_FOLDER = '000_FAILS' #'000'makes sure folder appears in first position

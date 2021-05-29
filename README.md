@@ -4,23 +4,23 @@ A GUI to automatically batch crop your portraits using face detection. Powered b
 
 ## Installation
 To use this GUI, you can either:
-1. Download the source code and generate the executable using pysintaller and the .spec file available in the repo
+1. Download the source code and generate the executable using pyinstaller and the .spec file available in the repo
 ~~~sh
 pyinstaller run.spec
 ~~~
 2. Download the "dist" directory which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
 
 ## Use
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "Batch Crop GUI")
 
 #### Buttons:
 * **Input Folder**: Directory containing the  images. If the input direcotry contains at least one folder, the program will search images inside those subfolders
 * **Output Folder**: Directory where the cropped images will be saved
 * **Preview**: A preview of what the cropped image will look like. Used to calibrate the cropping parameters. Takes the first image in the directory where a face was successfully detected.
-* **Frame**: Crops all the images in the input folder.
+* **Frame**: Crops all the images in the input folder and saves them in the ouput directory.
 
 #### Entry Fields:
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/illustration.JPG?raw=true "GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/illustration.JPG?raw=true "Parameters to specify")
 * **Width (%)**: The width of the cropped image, expressed as a percentage of the initial image width. (Int between 0 and 100)
 * **Height (%)**: The height of the cropped image, expressed as a percentage of the initial image height. (Int between 0 and 100)
 * **Horizontal Assymmetry (%)**: The horizontal assymmetry of the cropping area relative to the position of the face. Positive values will shift the image to the left of the face and negative values to the right (Integers). See examples below.
@@ -28,17 +28,20 @@ pyinstaller run.spec
 * **File Tag**: The program will save the cropped image with its original file name + the file tag. Ex: IMG001 is saved as IMG001_A for a file tag of 'A'. Optional.
 
 #### Checkboxes:
-* **Create one folder per face?**: save the cropped image in its own folder. Ex: IMG001 is saved in a new folder named IMG001.
+* **Create one folder per face?**: save the cropped image in its own folder. Ex: IMG001 is saved in a new folder named IMG001. Useful if you have multiple faces in a single image.
 * **My images contain only one individual**: Only crops the face with the highest confidence in each image. Otherwise can crop multiple face from a single image.
 
 ## Examples:
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_1.JPG?raw=true "GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_1.JPG?raw=true "Example 1")
 * Width (%): 55
 * Height (%): 80
 * Horizontal Assymmetry (%): 15
 * Vertical Assymmetry (%): 5
+<br/>
+<br/>
+<br/>
 
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_2.JPG?raw=true "GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_2.JPG?raw=true "Example 2")
 * Width (%): 35
 * Height (%): 70
 * Horizontal Assymmetry (%): 0
@@ -48,11 +51,11 @@ pyinstaller run.spec
 
 * JPG (tested)
 * PNG (tested)
-* Any image file readable by opencv and Pillow (not tested)
+* Any image file readable by OpenCV and Pillow (not tested)
 
 ## Supported OS
 
-* Windows 10 (tested). Should work fine on previous windows OS.
+* Windows 10 (tested). Should work fine on previous windows versions.
 * For other OS, you can generate the executable from your own OS:
 ~~~sh
 pyinstaller run.spec
