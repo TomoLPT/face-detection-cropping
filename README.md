@@ -11,7 +11,7 @@ pyinstaller run.spec
 2. Download the "dist" directory which contains the already packaged executable (your antivirus software might cause issues as the GUI is not signed)
 
 ## Use
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/app.JPG?raw=true "Batch Crop GUI")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/readme_images/app.JPG?raw=true "Batch Crop GUI")
 
 #### Buttons:
 * **Input Folder**: Directory containing the  images. If the input direcotry contains at least one folder, the program will search images inside those subfolders
@@ -20,7 +20,7 @@ pyinstaller run.spec
 * **Frame**: Crops all the images in the input folder and saves them in the ouput directory.
 
 #### Entry Fields:
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/illustration.JPG?raw=true "Parameters to specify")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/readme_images/illustration.JPG?raw=true "Parameters to specify")
 * **Width (%)**: The width of the cropped image, expressed as a percentage of the initial image width. (Int between 0 and 100)
 * **Height (%)**: The height of the cropped image, expressed as a percentage of the initial image height. (Int between 0 and 100)
 * **Horizontal Assymmetry (%)**: The horizontal assymmetry of the cropping area relative to the position of the face. Positive values will shift the image to the left of the face and negative values to the right (Integers). See examples below.
@@ -32,7 +32,7 @@ pyinstaller run.spec
 * **My images contain only one individual**: Only crops the face with the highest confidence in each image. Otherwise can crop multiple face from a single image.
 
 ## Examples:
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_1.JPG?raw=true "Example 1")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/readme_images/example_1.JPG?raw=true "Example 1")
 * Width (%): 55
 * Height (%): 80
 * Horizontal Assymmetry (%): 15
@@ -41,7 +41,7 @@ pyinstaller run.spec
 <br/>
 <br/>
 
-![Alt text](https://github.com/TomoLPT/face-detection-cropping/blob/main/readme_images/example_2.JPG?raw=true "Example 2")
+![Alt text](https://github.com/TomoLPT/face-detection-cropping/readme_images/example_2.JPG?raw=true "Example 2")
 * Width (%): 35
 * Height (%): 70
 * Horizontal Assymmetry (%): 0
