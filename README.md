@@ -1,6 +1,6 @@
 # face-detection-cropping
 
-A GUI to automatically batch crop your portraits using face detection. Powered by the OpenCV DNN algorithm.
+A GUI to automatically batch crop your portraits with AI. A face detection algorithm is written using the OpenCV deep neural network library.
 
 ## Installation
 To use this GUI, first download this repo by either:
